@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-time GPS Tracking</title>
+    <style>
+        body 
+        {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            height: 100vh;
+        }
+
+        #map-container 
+        {
+            flex: 1;
+            height: 100%;
+            position: relative;
+        }
+
+        #map 
+        {
+            height: 100%;
+            width: 100%;
+        }
+
+        #controls 
+        {
+            flex: 0.3;
+            background-color: #3498db;
+            color: #fff;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        button 
+        {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #2ecc71;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="map-container">
+        <div id="map"></div>
+    </div>
+
+    <div id="controls">
+        <h1>Real-time GPS Tracking</h1>
+        <button onclick="startTracking()">Start Tracking</button>
+    </div>
+
+    <script>
+        let map;
+        let marker;
+
+        function startTracking() {
+            if (navigator.geolocation) {
+                map = new Microsoft.Maps.Map(document.getElementById('map'), {
+                    credentials: 'AuXQWN3g7Y0UmD3x6jH89ROJdYZ1F31ZIZ8Vq92jYK_i9VsxPjsdKQrzuU--yZrz',
+                    center: new Microsoft.Maps.Location(0, 0),
+                    zoom: 15
+                });
+
+                marker = new Microsoft.Maps.Pushpin(map.getCenter(), {
+                    title: 'Current Location',
+                    color: 'red'
+                });
+                map.entities.push(marker);
+
+                navigator.geolocation.watchPosition(updateLocation, showError, { enableHighAccuracy: true, timeout: 8000 });
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        function updateLocation(position) {
+            const { latitude, longitude } = position.coords;
+
+            // Update marker position
+            marker.setLocation(new Microsoft.Maps.Location(latitude, longitude));
+
+            // Center the map on the new location
+            map.setView({ center: new Microsoft.Maps.Location(latitude, longitude) });
+        }
+
+        function showError(error) {
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    alert("User denied the request for Geolocation.");
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    alert("Location information is unavailable.");
+                    break;
+                case error.TIMEOUT:
+                    alert("The request to get user location timed out.");
+                    break;
+                case error.UNKNOWN_ERROR:
+                    alert("An unknown error occurred.");
+                    break;
+            }
+        }
+    </script>
+
+    <!-- Load the Bing Maps API -->
+    <script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol?callback=startTracking' async defer></script>
+</body>
+</html>
