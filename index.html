@@ -67,7 +67,7 @@
         function startTracking() {
             if (navigator.geolocation) {
                 map = new Microsoft.Maps.Map(document.getElementById('map'), {
-                    credentials: 'AuXQWN3g7Y0UmD3x6jH89ROJdYZ1F31ZIZ8Vq92jYK_i9VsxPjsdKQrzuU--yZrz',
+                    credentials: 'Aq5NdrA1xCR5nI_ucLF39jNlk7YwHLJZvKhIxF5q9GmjcYc6INgy3jDV0yIuO9q_',
                     center: new Microsoft.Maps.Location(0, 0),
                     zoom: 15
                 });
@@ -95,7 +95,8 @@
         }
 
         function showError(error) {
-            switch (error.code) {
+            switch (error.code) 
+            {
                 case error.PERMISSION_DENIED:
                     alert("User denied the request for Geolocation.");
                     break;
