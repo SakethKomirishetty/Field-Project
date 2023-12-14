@@ -5,29 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Real-time GPS Tracking</title>
     <style>
-        body 
-        {
+        body {
             margin: 0;
             padding: 0;
             display: flex;
             height: 100vh;
         }
 
-        #map-container 
-        {
+        #map-container {
             flex: 1;
             height: 100%;
             position: relative;
         }
 
-        #map 
-        {
+        #map {
             height: 100%;
             width: 100%;
         }
 
-        #controls 
-        {
+        #controls {
             flex: 0.3;
             background-color: #3498db;
             color: #fff;
@@ -39,14 +35,19 @@
             justify-content: center;
         }
 
-        button 
-        {
+        button {
             margin-top: 10px;
             padding: 10px;
             background-color: #2ecc71;
             color: #fff;
             border: none;
             cursor: pointer;
+        }
+
+        input {
+            margin-top: 10px;
+            padding: 5px;
+            width: 80%;
         }
     </style>
 </head>
@@ -57,46 +58,61 @@
 
     <div id="controls">
         <h1>Real-time GPS Tracking</h1>
+        <input type="text" id="friendLocationInput" placeholder="Enter College's Google Maps Live Location URL">
         <button onclick="startTracking()">Start Tracking</button>
     </div>
 
     <script>
         let map;
-        let marker;
+        let myMarker;
+        let collegeMarker;
 
         function startTracking() {
             if (navigator.geolocation) {
                 map = new Microsoft.Maps.Map(document.getElementById('map'), {
-                    credentials: 'AuXQWN3g7Y0UmD3x6jH89ROJdYZ1F31ZIZ8Vq92jYK_i9VsxPjsdKQrzuU--yZrz',
+                    credentials: 'Aq5NdrA1xCR5nI_ucLF39jNlk7YwHLJZvKhIxF5q9GmjcYc6INgy3jDV0yIuO9q_',
                     center: new Microsoft.Maps.Location(0, 0),
                     zoom: 15
                 });
 
-                marker = new Microsoft.Maps.Pushpin(map.getCenter(), {
-                    title: 'Current Location',
+                myMarker = new Microsoft.Maps.Pushpin(map.getCenter(), {
+    title: 'My Location',
+    icon: 'https://maps.gstatic.com/mapfiles/ms2/micons/bus.png', // URL of the bus icon
+    color: 'blue' 
+});
+map.entities.push(myMarker);
+
+                const collegeLocationInput = document.getElementById('friendLocationInput').value;
+
+                // Extract coordinates from the Google Maps link
+                const coordinates = extractCoordinates(collegeLocationInput);
+
+                // Create a marker for college's location
+                collegeMarker = new Microsoft.Maps.Pushpin(coordinates, {
+                    title: 'College Location',
                     color: 'red'
                 });
-                map.entities.push(marker);
+                map.entities.push(collegeMarker);
 
-                navigator.geolocation.watchPosition(updateLocation, showError, { enableHighAccuracy: true, timeout: 8000 });
+                // Update my location
+                navigator.geolocation.watchPosition(updateMyLocation, showError, { enableHighAccuracy: true, timeout: 8000 });
             } else {
                 alert("Geolocation is not supported by this browser.");
             }
         }
 
-        function updateLocation(position) {
+        function updateMyLocation(position) {
             const { latitude, longitude } = position.coords;
 
-            // Update marker position
-            marker.setLocation(new Microsoft.Maps.Location(latitude, longitude));
+            // Update my marker position
+            myMarker.setLocation(new Microsoft.Maps.Location(latitude, longitude));
 
-            // Center the map on the new location
+            // Center the map on my location
             map.setView({ center: new Microsoft.Maps.Location(latitude, longitude) });
         }
 
         function showError(error) {
-            switch (error.code) 
-            {
+            switch (error.code) {
                 case error.PERMISSION_DENIED:
                     alert("User denied the request for Geolocation.");
                     break;
@@ -110,6 +126,20 @@
                     alert("An unknown error occurred.");
                     break;
             }
+        }
+
+        function extractCoordinates(googleMapsLink) {
+            // Extract coordinates from the Google Maps link
+            const match = googleMapsLink.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+
+            if (match) {
+                const latitude = parseFloat(match[1]);
+                const longitude = parseFloat(match[2]);
+                return new Microsoft.Maps.Location(latitude, longitude);
+            }
+
+            // Return a default location if coordinates are not found
+            return new Microsoft.Maps.Location(0, 0);
         }
     </script>
 
