@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -51,6 +52,7 @@
         }
     </style>
 </head>
+
 <body>
     <div id="map-container">
         <div id="map"></div>
@@ -58,7 +60,7 @@
 
     <div id="controls">
         <h1>Real-time GPS Tracking</h1>
-        <input type="text" id="friendLocationInput" placeholder="Enter College's Google Maps Live Location URL">
+        <!-- Remove the input field for the location link -->
         <button onclick="startTracking()">Start Tracking</button>
     </div>
 
@@ -76,16 +78,17 @@
                 });
 
                 myMarker = new Microsoft.Maps.Pushpin(map.getCenter(), {
-    title: 'My Location',
-    icon: 'https://maps.gstatic.com/mapfiles/ms2/micons/bus.png', // URL of the bus icon
-    color: 'blue' 
-});
-map.entities.push(myMarker);
+                    title: 'My Location',
+                    icon: 'https://maps.gstatic.com/mapfiles/ms2/micons/bus.png',
+                    color: 'blue'
+                });
+                map.entities.push(myMarker);
 
-                const collegeLocationInput = document.getElementById('friendLocationInput').value;
+                // Set college location link directly in the code
+                const collegeLocationLink = 'https://www.google.com/maps/dir/17.4809431,78.395598/vnr+vjiet/@17.5112523,78.3529371,13z/data=!3m1!4b1!4m9!4m8!1m1!4e1!1m5!1m1!1s0x3bcb8e0ab28e0975:0x7b048b2858fdee94!2m2!1d78.3862931!2d17.5388821?entry=ttu';
 
                 // Extract coordinates from the Google Maps link
-                const coordinates = extractCoordinates(collegeLocationInput);
+                const coordinates = extractCoordinates(collegeLocationLink);
 
                 // Create a marker for college's location
                 collegeMarker = new Microsoft.Maps.Pushpin(coordinates, {
@@ -146,4 +149,5 @@ map.entities.push(myMarker);
     <!-- Load the Bing Maps API -->
     <script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol?callback=startTracking' async defer></script>
 </body>
+
 </html>
